@@ -29,6 +29,15 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   /**************************************************************************** */
 
+  app.get("/filteredimage" , (req, res) => {
+    const image_url = req.param('image_url');
+    if (!image_url) return res.status(404).send("Invalid request.");
+
+    filterImageFromURL(image_url).then( (result) => {
+      return res.status(200).sendfile(result);
+    })
+  });
+
   //! END @TODO1
   
   // Root Endpoint
