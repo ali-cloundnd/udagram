@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import {filterImageFromURL, deleteLocalFiles, runCannyEdgeDetector} from './util/util';
 
 (async () => {
 
@@ -28,16 +28,26 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
-
-  app.get("/filteredimage" , (req, res) => {
-    const image_url = req.param('image_url');
+  app.get("/filteredimage" , async (req, res) => {
+    const image_url = req.query.image_url;
     if (!image_url) return res.status(404).send("Invalid request.");
 
-    filterImageFromURL(image_url).then( (result) => {
-      return res.status(200).sendfile(result);
-    })
+    try {
+      const img = await filterImageFromURL(image_url);
+      const edge = await runCannyEdgeDetector(img);
+      return res.status(200).sendFile(edge, 
+          (err) => {
+            if (err) 
+              return err;
+            else {
+              deleteLocalFiles([img, edge])
+                  .catch( (err) => {  console.log(`Delete failed: ${err.message}`) });
+            }
+          });
+    } catch (err) {
+      return res.status(404).send(err.message);
+    }
   });
-
   //! END @TODO1
   
   // Root Endpoint
@@ -45,7 +55,6 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   app.get( "/", async ( req, res ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
-  
 
   // Start the Server
   app.listen( port, () => {
