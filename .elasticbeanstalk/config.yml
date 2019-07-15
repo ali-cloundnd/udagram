@@ -1,6 +1,6 @@
 branch-defaults:
   stag:
-    environment: null
+    environment: udacity-c2-image-filter-dev
     group_suffix: null
 deploy:
   artifact: ./www/Archive.zip
