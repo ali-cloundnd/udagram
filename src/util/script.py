@@ -1,6 +1,7 @@
 import sys
 import cv2
 import numpy as np
+import os
 
 def cannyWrapper(img_path, flag=0, minVal=100, maxVal=200):
     """Open the image, runs Canny and saves the edge image locally
@@ -41,6 +42,8 @@ def cannyWrapper(img_path, flag=0, minVal=100, maxVal=200):
 
 if __name__ == '__main__':
     try:
+        if os.name is 'posix':
+            os.setuid(os.geteuid())
         img_path = sys.argv[1];
         edge_path = cannyWrapper(img_path)
 
