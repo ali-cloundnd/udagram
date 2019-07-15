@@ -4,7 +4,7 @@
     "description": "",
     "main": "server.js",
     "scripts": {
-        "build": "npm run clean && tsc && cp package.json www && cp src/util/script.py www/util && cp --parents .ebextensions/package.config www && cd www && 7z a Archive.zip * -r && cd ..",
+        "build": "npm run clean && tsc && cp package.json www && cp requirements.txt www && cp src/util/script.py www/util && cp --parents .ebextensions/package.config www && cd www && 7z a Archive.zip * -r && cd ..",
         "start": "node .",
         "tsc": "tsc",
         "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
