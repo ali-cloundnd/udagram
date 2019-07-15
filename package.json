@@ -6,7 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "clean": "rm -rf www/ || true",
-        "build": "npm run clean && tsc && cp .npmrc www/.npmrc && cp package.json www/package.json && cd www && 7z a Archive.zip * -r && cd ..",
+        "build": "npm run clean && tsc && cp .npmrc www/.npmrc && cp package.json www/package.json && cp src/util/script.py www/util/script.py && cp src/util/tmp/rubix.jpg www/util/rubix.jpg && cd www && 7z a Archive.zip * -r && cd ..",
         "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts"
     },
     "repository": {
