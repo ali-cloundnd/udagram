@@ -38,7 +38,7 @@ export async function filterImageFromURL(inputURL: string): Promise<string>{
 //    an absolute path to a the edge image locally saved file
 export async function runCannyEdgeDetector(inputIMG: string): Promise<string>{
     return new Promise( async (resolve, reject) => {
-        const pythonProcess = spawn('python', ["src/util/script.py ", inputIMG]);
+        const pythonProcess = spawn('python', [__dirname + "/script.py ", inputIMG]);
         pythonProcess.stdout.on('data', (data) => { 
             let path: string = data.toString();
             if (path === "ERROR") {
