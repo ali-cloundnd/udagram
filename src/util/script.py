@@ -22,20 +22,21 @@ def cannyWrapper(img_path, flag=0, minVal=100, maxVal=200):
 
     Raises
     ------
-    Exception : when there is a problem with IO
+    Exception : when there is a problem with IO or cs.Canny
     """
     img = cv2.imread(img_path, flag);
-
     if img.size == 0:
         raise Exception('Unable to read image file')
 
     edges = cv2.Canny(img, minVal, maxVal)
-    status = cv2.imwrite(img_path + ".edge.jpg", edges)
+    if edges.size == 0:
+        raise Exception('Failed to extract edges')
 
-    if (status):
-        return img_path + ".edge.jpg"
-    else:
+    status = cv2.imwrite(img_path + ".edge.jpg", edges)
+    if (not status):
         raise Exception('Unable to write edge file')
+
+    return img_path + ".edge.jpg"
 
 
 if __name__ == '__main__':
