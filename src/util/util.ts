@@ -29,6 +29,12 @@ export async function filterImageFromURL(inputURL: string): Promise<string>{
             .greyscale() // set greyscale
             .write(__dirname+outpath, (img)=>{
                 filterDebug(`Processing over... Image is written to file ${__dirname+outpath}`);
+
+                filterDebug(`Alter the permissions for ${outpath}`);
+                fs.chmod(__dirname+outpath, 777, (err: Error) => {
+                    if(err) throw err;
+                });
+
                 filterDebug(`Resolve the promise!`);
                 resolve(__dirname+outpath);
             });
