@@ -27,5 +27,5 @@ npm run dev
 ## Endpoint on Elastic Beanstalk
 
 ```
-
+http://udacity-c2-image-filter-dev.us-west-1.elasticbeanstalk.com/
 ```
