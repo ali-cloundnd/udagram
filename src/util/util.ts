@@ -11,8 +11,11 @@ import { spawn } from 'child_process';
 //    an absolute path to a the edge image locally saved file
 export async function runCannyEdgeDetector(inputURL: string): Promise<string>{
     return new Promise( async (resolve, reject) => {
-        const pythonProcess = spawn('python', [__dirname + "/script.py ", inputURL, __dirname], { shell: true });
-        pythonProcess.stdout.on('data', (data) => { 
+        let command: string = 'python';
+        let args: string[] = [__dirname + "/script.py ", inputURL, __dirname];
+        let options = { shell: true };
+        const pythonProcess = spawn(command, args, options);
+        pythonProcess.stdout.on('data', (data: any) => { 
             let path: string = data.toString();
             if (path === "ERROR") {
                 let msg: string = "Python process ended with error!";
@@ -30,7 +33,7 @@ export async function runCannyEdgeDetector(inputURL: string): Promise<string>{
 // INPUTS
 //    files: Array<string> an array of absolute paths to files
 export async function deleteLocalFiles(files:Array<string>){
-    for( let file of files) {
+    for (let file of files) {
         fs.unlinkSync(file);
     }
 }

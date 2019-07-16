@@ -27,21 +27,21 @@ import {deleteLocalFiles, runCannyEdgeDetector} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
-  app.get("/filteredimage" , async (req, res) => {
-    const image_url = req.query.image_url;
+  app.get("/filteredimage" , async (req: express.Request, res: express.Response) => {
+    const image_url: string = req.query.image_url;
     
     // validate the image_url query
     if (!image_url) return res.status(404).send("Invalid request.");
 
     try {
-      const edge = await runCannyEdgeDetector(image_url);
-      return res.status(200).sendFile(edge, 
-          (err) => {
+      const path_to_edge_image: string = await runCannyEdgeDetector(image_url);
+      return res.status(200).sendFile(path_to_edge_image, 
+          (err: Error) => {
             if (err) 
               return err;
             else {
-              deleteLocalFiles([edge])
-                  .catch( (err) => {  console.log(`Delete failed: ${err.message}`) });
+              deleteLocalFiles([path_to_edge_image])
+                  .catch( (err: Error) => {  console.log(`Delete failed: ${err.message}`) });
             }
           });
     } catch (err) {
@@ -52,7 +52,7 @@ import {deleteLocalFiles, runCannyEdgeDetector} from './util/util';
   
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
+  app.get( "/", async ( req: express.Request, res: express.Response ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
 
