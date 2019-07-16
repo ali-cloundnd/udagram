@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import {deleteLocalFiles, runCannyEdgeDetector} from './util/util';
 
 (async () => {
 
@@ -13,11 +13,10 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
 
-  // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
+  // @DONE IMPLEMENT A RESTFUL ENDPOINT
   // GET /filteredimage?image_url={{URL}}
   // endpoint to filter an image from a public url.
   // IT SHOULD
-  //    1
   //    1. validate the image_url query
   //    2. call filterImageFromURL(image_url) to filter the image
   //    3. send the resulting file in the response
@@ -28,15 +27,34 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
+  app.get("/filteredimage" , async (req, res) => {
+    const image_url = req.query.image_url;
+    
+    // validate the image_url query
+    if (!image_url) return res.status(404).send("Invalid request.");
 
-  //! END @TODO1
+    try {
+      const edge = await runCannyEdgeDetector(image_url);
+      return res.status(200).sendFile(edge, 
+          (err) => {
+            if (err) 
+              return err;
+            else {
+              deleteLocalFiles([edge])
+                  .catch( (err) => {  console.log(`Delete failed: ${err.message}`) });
+            }
+          });
+    } catch (err) {
+      return res.status(422).send(err.message);
+    }
+  });
+  //! END @DONE
   
   // Root Endpoint
   // Displays a simple message to the user
   app.get( "/", async ( req, res ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
-  
 
   // Start the Server
   app.listen( port, () => {
