@@ -6,7 +6,7 @@ import random
 
 # import any special Python 2.7 packages
 if sys.version_info.major == 2:
-    import urllib as ur
+    import urllib2 as ur
 
 # import any special Python 3 packages
 elif sys.version_info.major == 3:
@@ -27,7 +27,7 @@ def url_to_image(url):
         raise Exception('Unable to read image from URL')
     return gray
 
-def cannyWrapper(img, minVal=100, maxVal=200):
+def cannyWrapper(img, minVal=50, maxVal=200):
     """ Runs Canny return the edge image 
         img : an OpenCV image in grayscale
         minVal & maxVal: are threshold for cs2.Canny
@@ -59,7 +59,7 @@ if __name__ == '__main__':
         # using print will add \r\n to the end of the path
         sys.stdout.write(path)
     except Exception as e: 
-        print(e);
-        # sys.stdout.write("ERROR")
+        # print(e);
+        sys.stdout.write("ERROR")
     
     sys.stdout.flush()

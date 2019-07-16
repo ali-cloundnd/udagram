@@ -29,3 +29,12 @@ npm run dev
 ```
 http://udacity-c2-image-filter-dev.us-west-1.elasticbeanstalk.com/
 ```
+
+Test it with
+
+```
+http://udacity-c2-image-filter-dev.us-west-1.elasticbeanstalk.com/filteredimage?image_url=https://ibin.co/4nygwZMPG1OT.jpg
+
+http://udacity-c2-image-filter-dev.us-west-1.elasticbeanstalk.com/filteredimage?image_url=https://timedotcom.files.wordpress.com/2019/03/kitten-report.jpg
+```
+

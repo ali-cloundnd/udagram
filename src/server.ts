@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles, runCannyEdgeDetector} from './util/util';
+import {deleteLocalFiles, runCannyEdgeDetector} from './util/util';
 
 (async () => {
 
@@ -34,8 +34,7 @@ import {filterImageFromURL, deleteLocalFiles, runCannyEdgeDetector} from './util
     if (!image_url) return res.status(404).send("Invalid request.");
 
     try {
-      const img = await filterImageFromURL(image_url);
-      const edge = await runCannyEdgeDetector(img);
+      const edge = await runCannyEdgeDetector(image_url);
       return res.status(200).sendFile(edge, 
           (err) => {
             if (err) 
