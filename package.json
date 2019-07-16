@@ -31,10 +31,6 @@
         "typescript": "^3.4.5"
     },
     "dependencies": {
-        "@types/debug": "^4.1.4",
-        "chmod": "^0.2.1",
-        "debug": "^4.1.1",
-        "express": "^4.17.0",
-        "jimp": "^0.6.4"
+        "express": "^4.17.0"
     }
 }
