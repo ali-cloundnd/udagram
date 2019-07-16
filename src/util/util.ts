@@ -17,27 +17,24 @@ const deleteDebug = Debug('util:delete');
 export async function filterImageFromURL(inputURL: string): Promise<string>{
     return new Promise( async (resolve, reject) => {
         try {
-            filterDebug(`Reading img from URL ${inputURL}`);
-            const photo = await Jimp.read(inputURL);
-            filterDebug(`Finished reading img from URL`);
-            const outpath = '/tmp/filtered.'+Math.floor(Math.random() * 2000)+'.jpg';
-            filterDebug(`Output path will be ${outpath}`);
-            filterDebug("Processing the image...resize...quality...greyscale...");
-            await photo
-            .resize(256, 256) // resize
-            .quality(60) // set JPEG quality
-            .greyscale() // set greyscale
-            .write(__dirname+outpath, (img)=>{
-                filterDebug(`Processing over... Image is written to file ${__dirname+outpath}`);
+            // filterDebug(`Reading img from URL ${inputURL}`);
+            // const photo = await Jimp.read(inputURL);
+            // filterDebug(`Finished reading img from URL`);
+            // const outpath = '/tmp/filtered.'+Math.floor(Math.random() * 2000)+'.jpg';
+            // filterDebug(`Output path will be ${outpath}`);
+            // filterDebug("Processing the image...resize...quality...greyscale...");
+            // await photo
+            // .resize(256, 256) // resize
+            // .quality(60) // set JPEG quality
+            // .greyscale() // set greyscale
+            // .write(__dirname+outpath, (img)=>{
+            //     filterDebug(`Processing over... Image is written to file ${__dirname+outpath}`);
+            //     filterDebug(`Resolve the promise!`);
+            //     resolve(__dirname+outpath);
+            // });
 
-                filterDebug(`Alter the permissions for ${outpath}`);
-                fs.chmod(__dirname+outpath, 777, (err: Error) => {
-                    if(err) throw err;
-                });
-
-                filterDebug(`Resolve the promise!`);
-                resolve(__dirname+outpath);
-            });
+            filterDebug(`Passing along the URL ${inputURL}`);
+            resolve(inputURL);
         } catch (err) {
             let msg: string = "Failed to read the prepare the image for edge detection!";
             cannyDebug(`Reject the promise: ${msg}`);
@@ -57,7 +54,7 @@ export async function filterImageFromURL(inputURL: string): Promise<string>{
 export async function runCannyEdgeDetector(inputIMG: string): Promise<string>{
     return new Promise( async (resolve, reject) => {
         cannyDebug("Going to spawn a child process to run python script...");
-        const pythonProcess = spawn('python', ["src/util/script.py ", inputIMG], { shell: true });
+        const pythonProcess = spawn('python', [__dirname + "/script.py ", inputIMG, __dirname], { shell: true });
         pythonProcess.stdout.on('data', (data) => { 
             cannyDebug("Received data from stdout...");
             let path: string = data.toString();

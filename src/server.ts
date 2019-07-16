@@ -41,7 +41,7 @@ import {filterImageFromURL, deleteLocalFiles, runCannyEdgeDetector} from './util
             if (err) 
               return err;
             else {
-              deleteLocalFiles([img, edge])
+              deleteLocalFiles([edge])
                   .catch( (err) => {  console.log(`Delete failed: ${err.message}`) });
             }
           });

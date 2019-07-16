@@ -1,52 +1,65 @@
 import sys
 import cv2
 import numpy as np
+import string
+import random
 
-def cannyWrapper(img_path, flag=0, minVal=100, maxVal=200):
-    """Open the image, runs Canny and saves the edge image locally
+# import any special Python 2.7 packages
+if sys.version_info.major == 2:
+    import urllib as ur
 
-    Parameters
-    ----------
-    img_path : an absolute path to an image locally saved file
-    flag : flag argument for cs2.imread
-        Default to 0; read as greyscale
-    minVal : first threshold for cs2.Canny
-        Default to 100
-    maxVal : second threshold for cs2.Canny
-        Default to 200   
+# import any special Python 3 packages
+elif sys.version_info.major == 3:
+    import urllib.request as ur
 
-    Returns
-    ------
-    edge_path : str
-        an absolute path to a the edge image locally saved file
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    """ Generate a random string of given size """
+    return ''.join(random.choice(chars) for _ in range(size))
 
-    Raises
-    ------
-    Exception : when there is a problem with IO or cs.Canny
+def url_to_image(url):
+    """ download the image, convert it to a NumPy array, and then read it into OpenCV format """
+    req = ur.Request(url, headers={'User-Agent' : "Magic Browser"})
+    resp = ur.urlopen(req)
+    image = np.asarray(bytearray(resp.read()), dtype="uint8")
+    image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    if (gray is None):
+        raise Exception('Unable to read image from URL')
+    return gray
+
+def cannyWrapper(img, minVal=100, maxVal=200):
+    """ Runs Canny return the edge image 
+        img : an OpenCV image in grayscale
+        minVal & maxVal: are threshold for cs2.Canny
     """
-    img = cv2.imread(img_path, flag);
-    if img.size == 0:
-        raise Exception('Unable to read image file')
-
     edges = cv2.Canny(img, minVal, maxVal)
-    if edges.size == 0:
+    if (edges is None):
         raise Exception('Failed to extract edges')
+    return edges
 
-    status = cv2.imwrite(img_path + ".edge.jpg", edges)
+
+def save_to_disk(img, folder):
+    """ Saves the img to folder, assigning it a random name
+        Returns the image file name
+    """
+    name = folder + "/" + id_generator() + ".jpg"
+    status = cv2.imwrite(name, img)
     if (not status):
         raise Exception('Unable to write edge file')
-
-    return img_path + ".edge.jpg"
+    return name
 
 
 if __name__ == '__main__':
     try:
-        img_path = sys.argv[1];
-        edge_path = cannyWrapper(img_path)
-
+        url = sys.argv[1]
+        folder = sys.argv[2]
+        img = url_to_image(url)
+        edge = cannyWrapper(img)
+        path = save_to_disk(edge, folder)
         # using print will add \r\n to the end of the path
-        sys.stdout.write(edge_path)
-    except:
-        sys.stdout.write("ERROR")
+        sys.stdout.write(path)
+    except Exception as e: 
+        print(e);
+        # sys.stdout.write("ERROR")
     
     sys.stdout.flush()
